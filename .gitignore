@@ -1,0 +1,27 @@
+# Virtual environment
+.venv/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+
+# Data files (user-specific)
+data/database.db
+data/.column_widths.json
+data/preferences.json
+data/ksef_config.json
+
+# Keys and certificates
+data/keys/
+*.key
+*.crt
+
+# Assets
+assets/
+
+# XML invoices
+xml_files/
