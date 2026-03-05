@@ -1,6 +1,7 @@
 """Database schema creation script."""
 import sys
 import os
+import json
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import sqlite3
 
@@ -202,6 +203,34 @@ def create_database(db_name=None):
     print(f"OK: Database '{db_name}' created successfully.")
 
 
+def create_ksef_config():
+    """Create data/ksef_config.json with placeholder values if it doesn't exist."""
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    config_path = os.path.join(project_root, "data", "ksef_config.json")
+
+    if os.path.exists(config_path):
+        print(f"OK: '{config_path}' already exists, skipping.")
+        return
+
+    default_config = {
+        "TOKEN": "your_token_here",
+        "NIP": "your_nip_here",
+        "ENVIRONMENT": "prod",
+        "SUBJECT_TYPE": "Subject2",
+        "USE_TOKEN_AUTH": False,
+        "KEY_FILE": "data/keys/your_key.key",
+        "CERT_FILE": "data/keys/your_cert.crt",
+        "TOKEN_FILE": None,
+    }
+
+    os.makedirs(os.path.dirname(config_path), exist_ok=True)
+    with open(config_path, "w", encoding="utf-8") as f:
+        json.dump(default_config, f, indent=4)
+
+    print(f"OK: '{config_path}' created with placeholder values.")
+
+
 if __name__ == "__main__":
     create_database()
+    create_ksef_config()
 

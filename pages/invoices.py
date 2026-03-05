@@ -1310,7 +1310,23 @@ def import_invoices(window):
     import os
     import shutil
     import tempfile
-    from scripts.ksef import USE_TOKEN_AUTH
+    from scripts.ksef import USE_TOKEN_AUTH, KEY_FILE, CERT_FILE
+
+    # Check if key/cert files exist when using key auth
+    if not USE_TOKEN_AUTH:
+        missing = []
+        if not KEY_FILE or not os.path.exists(KEY_FILE):
+            missing.append(".key")
+        if not CERT_FILE or not os.path.exists(CERT_FILE):
+            missing.append(".crt")
+        if missing:
+            QMessageBox.warning(
+                window, "Brak plików",
+                f"Brak plików: {', '.join(missing)} w folderze data/keys/.\n"
+                f"Umieść pliki klucza i certyfikatu przed importem faktur.\n"
+                f"Zmodyfikuj także ksef_config.json, aby wskazywał na poprawne nazwy plików."
+            )
+            return
 
     # Get existing ksef_numbers from DB to skip already imported invoices
     existing_ksef = set(db_fetch_column("SELECT ksef_number FROM invoices WHERE ksef_number IS NOT NULL"))

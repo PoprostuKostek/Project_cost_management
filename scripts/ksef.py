@@ -390,15 +390,21 @@ def download_all_invoices(token=None, nip=None, environment=None,
     final_cert = cert_file or CERT_FILE
     final_use_token = use_token_auth if use_token_auth is not None else USE_TOKEN_AUTH
 
+    missing = []
+    if not final_nip:
+        missing.append("NIP")
     if final_use_token and not final_token:
-        raise ValueError("No token provided")
+        missing.append("TOKEN")
     if not final_use_token:
         if not final_key:
-            raise ValueError("No key file provided")
+            missing.append("KEY_FILE")
         if not final_cert:
-            raise ValueError("No certificate file provided")
-    if not final_nip:
-        raise ValueError("No NIP provided")
+            missing.append("CERT_FILE")
+    if missing:
+        raise KSeFError(
+            f"Brak konfiguracji: {', '.join(missing)}.\n"
+            f"Uzupełnij plik data/ksef_config.json przed importem faktur."
+        )
 
     session = KSeFSession(
         token=final_token, key_file=final_key, cert_file=final_cert,
